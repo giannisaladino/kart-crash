@@ -7,7 +7,7 @@ const grid = document.querySelector('.grid');
 
 // Prepariamo la griglia iniziale
 const gridMatrix = [
-    ['', '', '', '', '', 'grass', ''],
+    ['', '', '', '', '', '', 'grass'],
     ['', 'cones', '', '', '', '', 'fence'],
     ['', '', 'rock', '', '', '', ''],
     ['fence', '', '', '', '', '', ''],
@@ -18,7 +18,13 @@ const gridMatrix = [
     ['', '', '', '', '', 'rock', ''],
 ];
 
+// console.table(gridMatrix);
+
+// impostazioni iniziali
+const kartPosition = { y: 7, x: 3 };
+
 //   FUNZIONI RELATIVE ALLA GRIGLIA
+// funzione per renderizzare la griglia
 function renderGrid() {
     // recupero ogni riga della matrice
     gridMatrix.forEach(function(rowCells){
@@ -33,10 +39,27 @@ function renderGrid() {
             // inseriamo la classe cell
             cell.className = 'cell';
 
+            // se c'è qualcosa nella cella, aggiungi anche una classe con lo stesso nome
+            if(cellContent) cell.classList.add(cellContent);
+
             // ora metti l'elemento nella griglia
             grid.appendChild(cell);
         })
     });
 }
 
-renderGrid();
+// FUNZIONI RELATIVE AL KART
+// funzione per posizionare il kart
+function placeKart() {
+    // inserisco la classe kart, nella cella corrispondente alle cordinate di kartPosition
+    gridMatrix[kartPosition.y][kartPosition.x] = 'kart';
+}
+
+// FUNZIONE CHE RAGGRUPPA LE OPERAZIONI DI RENDERING
+function renderElement(){
+    placeKart();
+    renderGrid();
+}
+
+// esecuzione delle funzioni di gioco
+renderElement();
