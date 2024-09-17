@@ -15,6 +15,12 @@ const grid = document.querySelector('.grid');
 // score counter
 const scoreCounter = document.querySelector('.score-counter')
 
+const endGameScreen = document.querySelector('.end-game-screen');
+
+const restartGame = document.querySelector('.play-again');
+
+const finalScore = document.querySelector('.final-score');
+
 // Prepariamo la griglia iniziale
 const gridMatrix = [
     ['', '', '', '', '', '', 'grass'],
@@ -66,6 +72,15 @@ function renderGrid() {
 // FUNZIONI RELATIVE AL KART
 // funzione per posizionare il kart
 function placeKart() {
+    // recuperiamo il valore della cella in cui dobbiamo posizionare il kart
+    const contentBeforeKart = gridMatrix[kartPosition.y][kartPosition.x];
+    // console.log(contentBeforeKart);
+
+    // se c'è qualcosa allora è collisione
+    if (contentBeforeKart) {
+        gameOver();
+    }
+    
     // inserisco la classe kart, nella cella corrispondente alle cordinate di kartPosition
     gridMatrix[kartPosition.y][kartPosition.x] = 'kart';
 }
@@ -175,7 +190,26 @@ function runGameFlow() {
     scrollObstacles();
 }
 
+// FUNZIONE DI FINE PARTITA
+function gameOver(){
+    // interrompo il flusso di gioco
+    clearInterval(gameLoop);
+
+    finalScore.innerText = score;
+
+    // rivelo l'immagine di fine gioco
+    endGameScreen.classList.remove('hidden');
+
+    // porto il focus sul tasto gioca ancora
+    restartGame.focus();
+}
+
 // EVENTI DI GIOCO
+// click sul bottone gioca ancora
+restartGame.addEventListener('click', function(){
+    location.reload();
+})
+
 // click bottone sinistra
 leftButton.addEventListener('click', function(){
     moveKart('left');
