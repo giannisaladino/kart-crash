@@ -166,7 +166,7 @@ function runGameFlow() {
     incrementScore();
 
     // aumentare la velocita ogni 10 punti
-    // la % indica il resto della divisione, quindi per tutti i multipli di 10 aumenterà la velocità
+    // la % indica il resto della divisione, quindi per tutti i multipli di 10 aumenterà la velocita
     if (score % 10 === 0) {
         incrementSpeed()  
     } 
