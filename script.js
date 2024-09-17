@@ -26,12 +26,12 @@ const gridMatrix = [
     ['', '', '', '', '', '', 'grass'],
     ['', 'cones', '', '', '', '', 'fence'],
     ['', '', 'rock', '', '', '', ''],
-    ['fence', '', '', '', '', '', ''],
+    ['fence', '', '', 'coin', '', '', ''],
     ['', '', 'grass', '', '', 'water', ''],
     ['', '', '', '', 'cones', '', ''],
     ['', 'water', '', '', '', '', ''],
     ['', '', '', '', '', '', ''],
-    ['', '', '', '', '', 'rock', ''],
+    ['', 'coin', '', '', '', 'rock', ''],
 ];
 
 // console.table(gridMatrix);
@@ -76,8 +76,10 @@ function placeKart() {
     const contentBeforeKart = gridMatrix[kartPosition.y][kartPosition.x];
     // console.log(contentBeforeKart);
 
-    // se c'è qualcosa allora è collisione
-    if (contentBeforeKart) {
+    // se c'è una moneta, prendi i punti bonus, altrimenti è collisione
+    if (contentBeforeKart === 'coin') {
+        getBonusPoints();
+    } else if (contentBeforeKart) {
         gameOver();
     }
     
@@ -158,6 +160,23 @@ function shuffleElements(row) {
 function incrementScore(){
     // aumento il punteggio di 1 e lo inserisco in pagina
     scoreCounter.innerText = ++score;
+}
+
+// FUNZIONI RELATIVE AI BONUS
+function getBonusPoints() {
+    // incremento il punteggio di 15 
+    score += 15;
+
+    // inseriamo il punteggio aggiornato in pagina
+    scoreCounter.innerText = score;
+
+    // aggiungiamo la classe bonus al contatore
+    scoreCounter.classList.add('bonus');
+
+    // rimuoviamo la classe subito dopo per poterla riutilizzare
+    setTimeout(function(){
+        scoreCounter.classList.remove('bonus');
+    }, 1500);
 }
 
 // aumento la velocità del gioco

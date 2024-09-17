@@ -302,7 +302,7 @@ a.button:active {
 }
 
 .score-counter.bonus::after {
-	content: '+30';
+	content: '+15';
 	color: #3ca98f;
 	position: absolute;
 	font-size: 18px;
