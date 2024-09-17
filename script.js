@@ -12,6 +12,9 @@ const rightButton = document.querySelector('.right-button');
 // griglia
 const grid = document.querySelector('.grid');
 
+// score counter
+const scoreCounter = document.querySelector('.score-counter')
+
 // Prepariamo la griglia iniziale
 const gridMatrix = [
     ['', '', '', '', '', '', 'grass'],
@@ -29,6 +32,8 @@ const gridMatrix = [
 
 // impostazioni iniziali
 const kartPosition = { y: 7, x: 3 };
+let score = 0;
+let speed = 1000;
 
 // FUNZIONI RELATIVE ALLA GRIGLIA
 // funzione per renderizzare la griglia
@@ -99,6 +104,77 @@ function renderElements(){
     renderGrid();
 }
 
+// FUNZIONI RELATIVE AGLI OSTACOLI
+// funzione per far scorrere gli ostacoli
+function scrollObstacles() {
+    // rimuovo temporaneamente il kart
+    gridMatrix[kartPosition.y][kartPosition.x] = '';
+
+    // recupero l'ultima riga e la mettiamo da parte
+    // pop permette di portare un elemento alla fine della lista
+    let lastRow = gridMatrix.pop();
+
+    // mescolo casualmente gli Elementi della riga
+    lastRow = shuffleElements(lastRow);
+
+    // riporto in cima l'ultima riga recuperata
+    // unshift permette di portare un elemento all'inizio della lista
+    gridMatrix.unshift(lastRow);
+
+    // console.table(gridMatrix);   
+
+    // rirenderizziamo gli elementi
+    renderElements();
+}
+
+// FUNZIONE PER MESCOLARE GLI ELEMENTE DI UNA RIGA
+function shuffleElements(row) {
+    // Algoritmo di Fisher-Yates
+    for (let i = row.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [row[i], row[j]] = [row[j], row[i]];
+    }
+
+    return row;
+}
+
+// FUNZIONI RELATIVE AI PUNTI E ALLA VELOCITA
+// funzione che incrementa il punteggio
+function incrementScore(){
+    // aumento il punteggio di 1 e lo inserisco in pagina
+    scoreCounter.innerText = ++score;
+}
+
+// aumento la velocità del gioco
+function incrementSpeed(){
+    // se non siamo già troppo veloci...
+    if (speed > 100) {
+        // interrompo il flusso di gioco
+        clearInterval(gameLoop);
+        // con il '-=' decremento l'intervallo aumentando la velocità in questo caso di 100;
+        speed -= 100;
+        
+        // rilanciamo il flusso con la velocità aggiornatas
+        gameLoop = setInterval(runGameFlow, speed);
+    }
+}
+
+// FUNZIONI RELATIVE AL FLUSSO DI GIOCO
+// funzione che raggruppa le operazioni da ripetere ciclicamente
+function runGameFlow() {
+    // aumentare il punteggio
+    incrementScore();
+
+    // aumentare la velocita ogni 10 punti
+    // la % indica il resto della divisione, quindi per tutti i multipli di 10 aumenterà la velocità
+    if (score % 10 === 0) {
+        incrementSpeed()  
+    } 
+        
+    // far scorrere gli ostacoli
+    scrollObstacles();
+}
+
 // EVENTI DI GIOCO
 // click bottone sinistra
 leftButton.addEventListener('click', function(){
@@ -127,4 +203,7 @@ document.addEventListener('keyup', function(event){
 
 
 // esecuzione delle funzioni di gioco
-renderElements();
+// renderElements();
+
+// scrollo automaticamente gli ostacoli
+let gameLoop = setInterval(runGameFlow, speed);

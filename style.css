@@ -92,7 +92,7 @@ header img {
 	height: 40px;
 	width: 40px;
 	cursor: pointer;
-	border: 2px dashed white;
+	/* border: 2px dashed white; */
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: 95%;
