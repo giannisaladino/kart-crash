@@ -26,12 +26,12 @@ const gridMatrix = [
     ['', '', '', '', '', '', 'grass'],
     ['', 'cones', '', '', '', '', 'fence'],
     ['', '', 'rock', '', '', '', ''],
-    ['fence', '', '', 'coin', '', '', ''],
+    ['fence', '', '', '', '', '', ''],
     ['', '', 'grass', '', '', 'water', ''],
     ['', '', '', '', 'cones', '', ''],
     ['', 'water', '', '', '', '', ''],
     ['', '', '', '', '', '', ''],
-    ['', 'coin', '', '', '', 'rock', ''],
+    ['', '', '', '', '', 'rock', ''],
 ];
 
 // console.table(gridMatrix);
@@ -127,9 +127,15 @@ function scrollObstacles() {
     // rimuovo temporaneamente il kart
     gridMatrix[kartPosition.y][kartPosition.x] = '';
 
+    // controllo se c'è una moneta in gioco
+    let isCoinInGame = lookForCoin();
+
     // recupero l'ultima riga e la mettiamo da parte
     // pop permette di portare un elemento alla fine della lista
     let lastRow = gridMatrix.pop();
+
+    // se non ci sono monete in gioco, inseriamo una moneta nella riga
+    if(!isCoinInGame) lastRow = insertCoin(lastRow);
 
     // mescolo casualmente gli Elementi della riga
     lastRow = shuffleElements(lastRow);
@@ -162,6 +168,20 @@ function incrementScore(){
     scoreCounter.innerText = ++score;
 }
 
+// aumento la velocità del gioco
+function incrementSpeed(){
+    // se non siamo già troppo veloci...
+    if (speed > 100) {
+        // interrompo il flusso di gioco
+        clearInterval(gameLoop);
+        // con il '-=' decremento l'intervallo aumentando la velocità in questo caso di 100;
+        speed -= 100;
+        
+        // rilanciamo il flusso con la velocità aggiornatas
+        gameLoop = setInterval(runGameFlow, speed);
+    }
+}
+
 // FUNZIONI RELATIVE AI BONUS
 function getBonusPoints() {
     // incremento il punteggio di 15 
@@ -179,19 +199,32 @@ function getBonusPoints() {
     }, 1500);
 }
 
-// aumento la velocità del gioco
-function incrementSpeed(){
-    // se non siamo già troppo veloci...
-    if (speed > 100) {
-        // interrompo il flusso di gioco
-        clearInterval(gameLoop);
-        // con il '-=' decremento l'intervallo aumentando la velocità in questo caso di 100;
-        speed -= 100;
-        
-        // rilanciamo il flusso con la velocità aggiornatas
-        gameLoop = setInterval(runGameFlow, speed);
-    }
+// Funzione per inserire una coin all'interno della riga
+function insertCoin(row){
+    // individuiamo l'indice del primo elemento vuoto
+    const emptyIndex = row.indexOf('');
+
+    // inserisco un coin in quella posizione
+    row[emptyIndex] = 'coin';
+
+    return row;
 }
+
+// Funzione per sapere se c'è una coin in gioco
+function lookForCoin() {
+    // creo un flag
+    let coinFound = false;
+
+    // recupero tutte le righe
+    gridMatrix.forEach(function(row){
+        // per ogni riga, controllo se c'è coin
+        if (row.includes('coin')) {
+            coinFound = true;
+        }
+    });
+    return coinFound;
+}
+
 
 // FUNZIONI RELATIVE AL FLUSSO DI GIOCO
 // funzione che raggruppa le operazioni da ripetere ciclicamente
